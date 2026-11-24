@@ -7,9 +7,9 @@
 
 ---
 
-## Milestone 2: [Name of Milestone 1]
+## Milestone 2: [Registration]
 * **Date:** 2026-11-20
-* **Summary:** I attempted to create the registration for the application, this included ensuring that the data was in the right form through using p
+* **Summary:** I attempted to create the registration for the application, this included ensuring that the data was in the right format/ 
 * **Challenges & Solutions:** 
 Using pydantic to ensure that the data was in the right format for the email/password/username and that the password was stored safely using password hash. 
 

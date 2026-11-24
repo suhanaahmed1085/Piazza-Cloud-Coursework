@@ -4,9 +4,14 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from piazza_app.database import get_db
-from piazza_app.models import User
-from piazza_app.schemas import UserCreate, UserResponse
-from piazza_app.security import hash_password
+from piazza_app.schemas import (
+    UserCreate,
+    UserResponse,
+    UserLogin,
+    TokenResponse,
+)
+from piazza_app.security import hash_password, verify_password
+from piazza_app.tokens import create_access_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -45,3 +50,24 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
     db.refresh(user)
     return user
+
+@router.post("/login", response_model=TokenResponse)
+def login(user_data: UserLogin, db: Session = Depends(get_db)):
+    email = user_data.email.lower()
+
+    user = db.query(User).filter(User.email == email).first()
+
+    if user is None or not verify_password(
+        user_data.password,
+        user.hashed_password,
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return TokenResponse(
+        access_token=create_access_token(user.id),
+        token_type="bearer",
+    )

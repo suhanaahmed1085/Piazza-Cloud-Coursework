@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from piazza_app.database import Base
 
+# describing the data stored in the database
 class User(Base):
     __tablename__ = "users"
 
